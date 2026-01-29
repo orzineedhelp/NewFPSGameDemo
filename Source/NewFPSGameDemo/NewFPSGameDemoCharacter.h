@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include <Weapon/Weapon.h>
+
 #include "NewFPSGameDemoCharacter.generated.h"
 
 class UInputComponent;
@@ -90,6 +92,8 @@ public:
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	//用于指定哪些变量需要网络复制以及它们的复制条件
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 
 protected:
@@ -123,8 +127,16 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoSprintEnd();
 
-	private:
+private:
 		UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 		class UWidgetComponent* OverheadWidget;
+
+		UPROPERTY(Replicated)
+		class AWeapon* OverlappingWeapon;
+
+public:
+	//强制内联函数
+	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
+
 };
 

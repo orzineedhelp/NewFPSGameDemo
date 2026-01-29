@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "NewFPSGameDemo.h"
 
 ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
@@ -81,6 +82,14 @@ void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* Player
 	{
 		UE_LOG(LogNewFPSGameDemo, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ANewFPSGameDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// ×¢²á OverlappingWeapon ½øÐÐÍøÂç¸´ÖÆ
+	DOREPLIFETIME(ANewFPSGameDemoCharacter, OverlappingWeapon);
 }
 
 
@@ -218,3 +227,4 @@ void ANewFPSGameDemoCharacter::DoSprintEnd()
 
 	}
 }
+
