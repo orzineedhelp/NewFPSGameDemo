@@ -42,6 +42,13 @@ ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 	// Configure character movement
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	GetCharacterMovement()->AirControl = 0.5f;
+
+	// 初始化冲刺
+	bIsSprinting = false;
+	SprintSpeedMultiplier = 1.5f;
+	SprintAcceleration = 2048.0f;
+	bCanSprintWhileJumping = false;
+
 }
 
 void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -59,6 +66,14 @@ void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		// Looking/Aiming
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANewFPSGameDemoCharacter::LookInput);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &ANewFPSGameDemoCharacter::LookInput);
+
+		//Sprint
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ANewFPSGameDemoCharacter::DoSprintStart);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ANewFPSGameDemoCharacter::DoSprintEnd);
+
+		// Crouch
+		EnhancedInputComponent->BindAction(DownAction, ETriggerEvent::Triggered, this, &ANewFPSGameDemoCharacter::DoDown);
+
 	}
 	else
 	{
@@ -67,11 +82,11 @@ void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* Player
 }
 
 
+
 void ANewFPSGameDemoCharacter::MoveInput(const FInputActionValue& Value)
 {
 	// get the Vector2D move axis
 	FVector2D MovementVector = Value.Get<FVector2D>();
-
 	// pass the axis values to the move input
 	DoMove(MovementVector.X, MovementVector.Y);
 
@@ -101,9 +116,9 @@ void ANewFPSGameDemoCharacter::DoMove(float Right, float Forward)
 {
 	if (GetController())
 	{
-		// pass the move inputs
-		AddMovementInput(GetActorRightVector(), Right);
-		AddMovementInput(GetActorForwardVector(), Forward);
+			// pass the move inputs
+			AddMovementInput(GetActorRightVector(), Right);
+			AddMovementInput(GetActorForwardVector(), Forward);
 	}
 }
 
@@ -117,4 +132,34 @@ void ANewFPSGameDemoCharacter::DoJumpEnd()
 {
 	// pass StopJumping to the character
 	StopJumping();
+}
+
+void ANewFPSGameDemoCharacter::DoDown()
+{	//使用Character自带的蹲下
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Cyan, TEXT("Crouch Started"));
+	}
+
+	if (IsCrouched())  
+	{
+		UnCrouch();    
+	}
+	else             
+	{
+		if (CanCrouch()) // 检查是否可以蹲下
+		{
+			Crouch();   
+			
+		}
+	}
+}
+
+void ANewFPSGameDemoCharacter::DoSprintStart()
+{
+
+}
+
+void ANewFPSGameDemoCharacter::DoSprintEnd()
+{
 }
