@@ -152,7 +152,6 @@ void ANewFPSGameDemoCharacter::DoDown()
 		if (CanCrouch()) // 检查是否可以蹲下
 		{
 			Crouch();   
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("Crouched! ")));
 
 		}
 	}
@@ -160,51 +159,58 @@ void ANewFPSGameDemoCharacter::DoDown()
 
 void ANewFPSGameDemoCharacter::DoSprintStart()
 {
-	if (!GetCharacterMovement() || bIsSprinting)
-	{
-		return; 
-	}
+	if (!GetCharacterMovement() || bIsSprinting) return;
 
 	// 检查是否可以冲刺
 	if (GetCharacterMovement()->IsMovingOnGround())
 	{
 		bIsSprinting = true;
 
-		//如蹲下最大速度不同
+		// 蹲下
 		if (IsCrouched())
 		{
-			DefaultWalkSpeedCrouched = GetCharacterMovement()->MaxWalkSpeedCrouched;
-			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeedCrouched * SprintSpeedMultiplier;
-
+			// 记录当前蹲下速度
+			if (DefaultWalkSpeedCrouched == 0.0f)
+			{
+				DefaultWalkSpeedCrouched = GetCharacterMovement()->MaxWalkSpeedCrouched;
+			}
+			// 设置冲刺蹲下速度
+			GetCharacterMovement()->MaxWalkSpeedCrouched = DefaultWalkSpeedCrouched * SprintSpeedMultiplier;
 		}
-		else
+		else//正常行走
 		{
-			// 记录当前速度
-			DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
-
-			// 更改速度
+			// 记录当前行走速度
+			if (DefaultWalkSpeed == 0.0f)
+			{
+				DefaultWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+			}
+			// 设置冲刺行走速度
 			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed * SprintSpeedMultiplier;
 		}
-		
 	}
 }
 
 void ANewFPSGameDemoCharacter::DoSprintEnd()
 {
-	if (!bIsSprinting)
-	{
-		return;
-	}
+
+	if (!bIsSprinting) return;
 
 	bIsSprinting = false;
 
 	if (IsCrouched())
-	{
-		// 恢复为正常蹲下速度
+	{// 恢复为正常蹲下速度
 		if (GetCharacterMovement())
 		{
-			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeedCrouched;
-
+			GetCharacterMovement()->MaxWalkSpeedCrouched = DefaultWalkSpeedCrouched;
 		}
+
+	}
+	else
+	{		// 恢复为正常行走速度
+		if (GetCharacterMovement())
+		{
+			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;
+		}
+
 	}
 }
