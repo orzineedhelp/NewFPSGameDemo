@@ -1,5 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+
+#include "Components/WidgetComponent.h"
 #include "NewFPSGameDemoCharacter.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -47,6 +49,8 @@ ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 	bIsSprinting = false;
 	SprintSpeedMultiplier = 1.5f;
 
+	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
+	OverheadWidget->SetupAttachment(RootComponent);
 }
 
 void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

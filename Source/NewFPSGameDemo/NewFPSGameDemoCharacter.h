@@ -122,5 +122,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoSprintEnd();
+
+	private:
+		UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
+		class UWidgetComponent* OverheadWidget;
 };
 
