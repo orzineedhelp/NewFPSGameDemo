@@ -95,6 +95,8 @@ public:
 	//用于指定哪些变量需要网络复制以及它们的复制条件
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	virtual void PostInitializeComponents() override;
+
 
 protected:
 	/** Sprint Input Action */
@@ -104,6 +106,10 @@ protected:
 	/** Dowm Input Action */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* DownAction;
+
+	/** Equip Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* EquipAction;
 
 private:
 	// 冲刺相关变量 
@@ -115,6 +121,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement|Sprint", meta = (AllowPrivateAccess = "true"))
 	float DefaultWalkSpeed;  // 存储默认行走速度
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement|Sprint", meta = (AllowPrivateAccess = "true"))
 	float DefaultWalkSpeedCrouched;  // 存储默认蹲下行走速度
 
 protected:
@@ -127,6 +135,9 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoSprintEnd();
 
+	UFUNCTION(BlueprintCallable, Category = "Input")
+		virtual void DoEquip();
+
 private:
 		UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 		class UWidgetComponent* OverheadWidget;
@@ -136,6 +147,12 @@ private:
 
 		UFUNCTION()
 		void OnRep_OverlappingWeapon(AWeapon* LastWeapon);// 复制回调函数
+
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		class UCombatComponent* Combat;
+
+
 public:
 
 	void SetOverlappingWeapon(AWeapon* Weapon);

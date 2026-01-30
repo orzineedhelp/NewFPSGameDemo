@@ -56,6 +56,9 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+	
+	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; };
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	USkeletalMeshComponent* WeaponMesh;

@@ -12,6 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "NewFPSGameDemo.h"
+#include "FPSComponent/CombatComponent.h"
 
 ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 {
@@ -52,6 +53,9 @@ ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+
+	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	Combat->SetIsReplicated(true);
 }
 
 void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -77,6 +81,9 @@ void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		// Crouch
 		EnhancedInputComponent->BindAction(DownAction, ETriggerEvent::Triggered, this, &ANewFPSGameDemoCharacter::DoDown);
 
+		// EquipWeapon
+		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ANewFPSGameDemoCharacter::DoEquip);
+
 	}
 	else
 	{
@@ -91,6 +98,16 @@ void ANewFPSGameDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	// 注册 OverlappingWeapon 进行网络复制
 	//COND_OwnerOnly：复制条件，表示这个变量只复制给该 Actor 的所有者
 	DOREPLIFETIME_CONDITION(ANewFPSGameDemoCharacter, OverlappingWeapon,COND_OwnerOnly);
+}
+
+//组件初始化完成后调用
+void ANewFPSGameDemoCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (Combat)
+	{
+		Combat->Character = this;
+	}
 }
 
 
@@ -226,6 +243,15 @@ void ANewFPSGameDemoCharacter::DoSprintEnd()
 			GetCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;
 		}
 
+	}
+}
+
+void ANewFPSGameDemoCharacter::DoEquip()
+{
+	if (Combat&&HasAuthority())
+	{
+ 
+		Combat->EquipWeapon(OverlappingWeapon);
 	}
 }
 
