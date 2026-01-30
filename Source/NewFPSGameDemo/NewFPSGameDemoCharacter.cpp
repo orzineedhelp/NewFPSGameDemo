@@ -89,7 +89,8 @@ void ANewFPSGameDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	// 注册 OverlappingWeapon 进行网络复制
-	DOREPLIFETIME(ANewFPSGameDemoCharacter, OverlappingWeapon);
+	//COND_OwnerOnly：复制条件，表示这个变量只复制给该 Actor 的所有者
+	DOREPLIFETIME_CONDITION(ANewFPSGameDemoCharacter, OverlappingWeapon,COND_OwnerOnly);
 }
 
 
@@ -227,4 +228,35 @@ void ANewFPSGameDemoCharacter::DoSprintEnd()
 
 	}
 }
+
+void ANewFPSGameDemoCharacter::SetOverlappingWeapon(AWeapon* Weapon)
+{
+	//重置前检查是否存在武器
+	if (OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickUpWidget(false);
+	}
+
+	OverlappingWeapon = Weapon;
+	
+	if (IsLocallyControlled()) 
+	{
+		if (OverlappingWeapon)
+		{
+			OverlappingWeapon->ShowPickUpWidget(true);
+		}
+	}
+}
+
+void ANewFPSGameDemoCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
+{
+	if (OverlappingWeapon)
+	{
+		OverlappingWeapon->ShowPickUpWidget(true);
+	}
+	if (LastWeapon) {
+		LastWeapon->ShowPickUpWidget(false);
+	}
+}
+
 

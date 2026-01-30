@@ -72,6 +72,12 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	ANewFPSGameDemoCharacter* FPSCharacter = Cast<ANewFPSGameDemoCharacter>(OtherActor);
+	if (FPSCharacter)
+	{
+		FPSCharacter->SetOverlappingWeapon(nullptr);
+
+	}
 }
 
 void AWeapon::Tick(float DeltaTime)

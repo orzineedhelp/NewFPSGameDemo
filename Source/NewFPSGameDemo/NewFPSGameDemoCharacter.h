@@ -131,12 +131,14 @@ private:
 		UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 		class UWidgetComponent* OverheadWidget;
 
-		UPROPERTY(Replicated)
-		class AWeapon* OverlappingWeapon;
+		UPROPERTY(ReplicatedUsing=ONRep_OverlappingWeapon)// 复制时使用的回调函数
+		class AWeapon* OverlappingWeapon;  // 指向武器对象的指针
 
+		UFUNCTION()
+		void OnRep_OverlappingWeapon(AWeapon* LastWeapon);// 复制回调函数
 public:
-	//强制内联函数
-	FORCEINLINE void SetOverlappingWeapon(AWeapon* Weapon) { OverlappingWeapon = Weapon; }
+
+	void SetOverlappingWeapon(AWeapon* Weapon);
 
 };
 
