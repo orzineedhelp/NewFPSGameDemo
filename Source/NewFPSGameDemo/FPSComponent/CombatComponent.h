@@ -26,6 +26,14 @@ protected:
 
 	UFUNCTION(Server,Reliable)
 	void ServerSetAiming(bool bIsAiming);
+
+
+	void FireButtonPressed(bool bPressed);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetFiring(bool bPressed);
+
+
 public:	
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -37,4 +45,5 @@ private:
 	class AWeapon* EquippedWeapon;
 
 	bool bAiming;
+	bool bFireButtonPressed;
 };

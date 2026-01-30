@@ -52,6 +52,17 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 	bAiming = bIsAiming;
 }
 
+void UCombatComponent::FireButtonPressed(bool bPressed)
+{
+	bFireButtonPressed = bPressed;
+	ServerSetFiring(bFireButtonPressed);
+}
+
+void UCombatComponent::ServerSetFiring_Implementation(bool bPressed)
+{
+	bFireButtonPressed = bPressed;
+}
+
 void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

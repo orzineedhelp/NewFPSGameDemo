@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
+#include "FPSAnimInstance.h"
 #include "Components/WidgetComponent.h"
 #include "NewFPSGameDemoCharacter.h"
 #include "Animation/AnimInstance.h"
@@ -90,6 +91,11 @@ void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* Player
 		//Aiming
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ANewFPSGameDemoCharacter::DoAimStart);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ANewFPSGameDemoCharacter::DoAimEnd);
+
+
+		//Firing
+		EnhancedInputComponent->BindAction(FireAction_FPS, ETriggerEvent::Started, this, &ANewFPSGameDemoCharacter::DoFireStart);
+		EnhancedInputComponent->BindAction(FireAction_FPS, ETriggerEvent::Completed, this, &ANewFPSGameDemoCharacter::DoFireEnd);
 
 	}
 	else
@@ -286,6 +292,22 @@ void ANewFPSGameDemoCharacter::DoAimEnd()
 	
 }
 
+void ANewFPSGameDemoCharacter::DoFireStart()
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(true);
+	}
+}
+
+void ANewFPSGameDemoCharacter::DoFireEnd()
+{
+	if (Combat)
+	{
+		Combat->FireButtonPressed(false);
+	}
+}
+
 
 void ANewFPSGameDemoCharacter::ServerEquipButtonPressed_Implementation()
 {
@@ -320,6 +342,11 @@ bool ANewFPSGameDemoCharacter::IsWeaponEquipped()
 
 }
 
+bool ANewFPSGameDemoCharacter::IsFiring()
+{
+	return (Combat && Combat->bFireButtonPressed);
+}
+
 bool ANewFPSGameDemoCharacter::IsAiming()
 {
 	return (Combat && Combat->bAiming);
@@ -336,5 +363,6 @@ void ANewFPSGameDemoCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 		LastWeapon->ShowPickUpWidget(false);
 	}
 }
+
 
 

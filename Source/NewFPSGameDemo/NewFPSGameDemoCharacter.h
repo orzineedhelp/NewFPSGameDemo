@@ -115,6 +115,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	class UInputAction* AimAction;
 
+	/** Aim Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	class UInputAction* FireAction_FPS;
+
 private:
 	// 冲刺相关变量 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint", meta = (AllowPrivateAccess = "true"))
@@ -152,6 +156,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoAimEnd();
 
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	virtual void DoFireStart();
+
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	virtual void DoFireEnd();
+
 private:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	class UWidgetComponent* OverheadWidget;
@@ -169,6 +179,9 @@ private:
 	UFUNCTION(Server,Reliable)
 	void ServerEquipButtonPressed();
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UAnimMontage* FireWeaponMontage;
+
 public:
 
 	void SetOverlappingWeapon(AWeapon* Weapon);
@@ -177,6 +190,9 @@ public:
 	bool IsWeaponEquipped();
 
 	bool IsAiming();
+
+	bool IsFiring();
+
 
 };
 
