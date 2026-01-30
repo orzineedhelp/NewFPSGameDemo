@@ -22,10 +22,19 @@ public:
 	void EquipWeapon(class AWeapon* WeaponToEquip);
 protected:
 	virtual void BeginPlay() override;
+	void SetAiming(bool IsAiming);
 
+	UFUNCTION(Server,Reliable)
+	void ServerSetAiming(bool bIsAiming);
 public:	
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 private:
 	class ANewFPSGameDemoCharacter* Character;
+
+	UPROPERTY(Replicated)
 	class AWeapon* EquippedWeapon;
+
+	bool bAiming;
 };

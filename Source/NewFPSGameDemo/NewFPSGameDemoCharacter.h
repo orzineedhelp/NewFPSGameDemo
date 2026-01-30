@@ -111,6 +111,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* EquipAction;
 
+	/** Aim Input Action */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	class UInputAction* AimAction;
+
 private:
 	// 冲刺相关变量 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Sprint", meta = (AllowPrivateAccess = "true"))
@@ -125,6 +129,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement|Sprint", meta = (AllowPrivateAccess = "true"))
 	float DefaultWalkSpeedCrouched;  // 存储默认蹲下行走速度
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement|Equip", meta = (AllowPrivateAccess = "true"))
+	bool bIsEquipped;
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoDown();
@@ -138,26 +146,37 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 		virtual void DoEquip();
 
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	virtual void DoAimStart();
+
+	UFUNCTION(BlueprintCallable, Category = "Input")
+	virtual void DoAimEnd();
+
 private:
-		UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
-		class UWidgetComponent* OverheadWidget;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
+	class UWidgetComponent* OverheadWidget;
 
-		UPROPERTY(ReplicatedUsing=ONRep_OverlappingWeapon)// 复制时使用的回调函数
-		class AWeapon* OverlappingWeapon;  // 指向武器对象的指针
+	UPROPERTY(ReplicatedUsing=ONRep_OverlappingWeapon)// 复制时使用的回调函数
+	class AWeapon* OverlappingWeapon;  // 指向武器对象的指针
 
-		UFUNCTION()
-		void OnRep_OverlappingWeapon(AWeapon* LastWeapon);// 复制回调函数
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);// 复制回调函数
 
 
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-		class UCombatComponent* Combat;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UCombatComponent* Combat;
 
-		UFUNCTION(Server,Reliable)
-		void ServerEquipButtonPressed();
+	UFUNCTION(Server,Reliable)
+	void ServerEquipButtonPressed();
 
 public:
 
 	void SetOverlappingWeapon(AWeapon* Weapon);
+
+
+	bool IsWeaponEquipped();
+
+	bool IsAiming();
 
 };
 

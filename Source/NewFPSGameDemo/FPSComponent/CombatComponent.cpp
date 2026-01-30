@@ -7,6 +7,7 @@
 #include "Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "NewFPSGameDemoCharacter.h"
+#include <Net/UnrealNetwork.h>
 
 
 
@@ -38,6 +39,25 @@ void UCombatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	
+}
+
+void UCombatComponent::SetAiming(bool IsAiming)
+{
+	bAiming = IsAiming;
+	ServerSetAiming(bAiming);
+}
+
+void UCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
+{
+	bAiming = bIsAiming;
+}
+
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCombatComponent, EquippedWeapon);
+
 }
 
 

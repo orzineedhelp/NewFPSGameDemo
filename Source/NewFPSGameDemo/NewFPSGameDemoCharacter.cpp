@@ -51,6 +51,9 @@ ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 	bIsSprinting = false;
 	SprintSpeedMultiplier = 1.5f;
 
+	//初始化装备武器
+	bIsEquipped = IsWeaponEquipped();
+
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
 
@@ -83,6 +86,10 @@ void ANewFPSGameDemoCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// EquipWeapon
 		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ANewFPSGameDemoCharacter::DoEquip);
+
+		//Aiming
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ANewFPSGameDemoCharacter::DoAimStart);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ANewFPSGameDemoCharacter::DoAimEnd);
 
 	}
 	else
@@ -123,6 +130,7 @@ void ANewFPSGameDemoCharacter::MoveInput(const FInputActionValue& Value)
 
 void ANewFPSGameDemoCharacter::LookInput(const FInputActionValue& Value)
 {
+	
 	// get the Vector2D look axis
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -140,7 +148,6 @@ void ANewFPSGameDemoCharacter::DoAim(float Yaw, float Pitch)
 		AddControllerPitchInput(Pitch);
 	}
 }
-
 void ANewFPSGameDemoCharacter::DoMove(float Right, float Forward)
 {
 	if (GetController())
@@ -262,6 +269,24 @@ void ANewFPSGameDemoCharacter::DoEquip()
 	}
 }
 
+void ANewFPSGameDemoCharacter::DoAimStart()
+{
+	if (Combat)
+	{
+		Combat->SetAiming(true);
+	}
+}
+
+void ANewFPSGameDemoCharacter::DoAimEnd()
+{
+	if (Combat)
+	{
+		Combat->SetAiming(false);
+	}
+	
+}
+
+
 void ANewFPSGameDemoCharacter::ServerEquipButtonPressed_Implementation()
 {
 	if (Combat)
@@ -288,6 +313,18 @@ void ANewFPSGameDemoCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 		}
 	}
 }
+
+bool ANewFPSGameDemoCharacter::IsWeaponEquipped() 
+{
+	return (Combat && Combat->EquippedWeapon);
+
+}
+
+bool ANewFPSGameDemoCharacter::IsAiming()
+{
+	return (Combat && Combat->bAiming);
+}
+
 
 void ANewFPSGameDemoCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
 {

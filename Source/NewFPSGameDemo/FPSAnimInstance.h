@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+
 #include "FPSAnimInstance.generated.h"
 
 /**
@@ -14,4 +15,18 @@ class NEWFPSGAMEDEMO_API UFPSAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void NativeInitializeAnimation()override;
+	virtual void NativeUpdateAnimation(float DeltaTime) override;
+
+private:
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	class ANewFPSGameDemoCharacter* FPSCharacter;
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	bool bWeaponEquipped;
+
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	bool bAiming;
 };
