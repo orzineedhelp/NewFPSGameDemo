@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
+#define  TRACE_LENGTH 80000.f
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class NEWFPSGAMEDEMO_API UCombatComponent : public UActorComponent
@@ -32,6 +33,8 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetFiring(bool bPressed);
+
+	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
 
 public:	
