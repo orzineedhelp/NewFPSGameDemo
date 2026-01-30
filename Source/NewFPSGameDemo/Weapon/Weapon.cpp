@@ -3,8 +3,8 @@
 
 #include "Weapon.h"
 #include "NewFPSGameDemoCharacter.h"
-#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include <Net/UnrealNetwork.h>
 
 // Sets default values
 AWeapon::AWeapon()
@@ -40,6 +40,13 @@ void AWeapon::ShowPickUpWidget(bool bShowWidget)
 	{
 		PickUpWidget->SetVisibility(bShowWidget);
 	}
+}
+
+void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AWeapon, WeaponState);
+
 }
 
 void AWeapon::BeginPlay()
@@ -84,5 +91,41 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AWeapon::SetWeaponState(EWeaponState State)
+{
+	WeaponState = State;
+	
+	switch (WeaponState)
+	{
+
+	case EWeaponState::EWS_Equipped:
+		ShowPickUpWidget(false);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	}
+
+}
+
+void AWeapon::OnRep_WeaponState()
+{
+	switch (WeaponState)
+	{
+	case EWeaponState::EWS_Initial:
+		break;
+	case EWeaponState::EWS_Equipped:
+		ShowPickUpWidget(false);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	case EWeaponState::EWS_EquippedSecondary:
+		break;
+	case EWeaponState::EWS_Dropped:
+		break;
+	case EWeaponState::EWS_MAX:
+		break;
+	default:
+		break;
+	}
 }
 

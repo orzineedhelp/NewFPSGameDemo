@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
+#include "Components/SphereComponent.h"
 #include "CombatComponent.h"
 #include "Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -23,15 +25,14 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	EquippedWeapon = WeaponToEquip;
 	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
 	const USkeletalMeshSocket* HandSocket= Character->GetMesh()->GetSocketByName(FName("HandGrip_R"));
+	UE_LOG(LogTemp, Warning, TEXT("HandSocket Valid:%d"),HandSocket);
 	if (HandSocket)
 	{
-		HandSocket->AttachActor(EquippedWeapon, Character->GetMesh());
+		HandSocket->AttachActor(EquippedWeapon, Character->GetMesh());//手持武器
 	}
-	EquippedWeapon->SetOwner(Character);
-	EquippedWeapon->ShowPickUpWidget(false);
+	EquippedWeapon->SetOwner(Character);//自动进行复制
 }
 
-// Called when the game starts
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -40,11 +41,9 @@ void UCombatComponent::BeginPlay()
 }
 
 
-// Called every frame
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 

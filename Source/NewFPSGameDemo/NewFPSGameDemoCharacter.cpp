@@ -248,9 +248,24 @@ void ANewFPSGameDemoCharacter::DoSprintEnd()
 
 void ANewFPSGameDemoCharacter::DoEquip()
 {
-	if (Combat&&HasAuthority())
+
+	if (Combat)
 	{
- 
+		if (HasAuthority()) 
+		{
+			Combat->EquipWeapon(OverlappingWeapon);
+		}
+		else
+		{
+			ServerEquipButtonPressed();
+		}
+	}
+}
+
+void ANewFPSGameDemoCharacter::ServerEquipButtonPressed_Implementation()
+{
+	if (Combat)
+	{
 		Combat->EquipWeapon(OverlappingWeapon);
 	}
 }

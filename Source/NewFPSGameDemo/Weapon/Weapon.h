@@ -2,6 +2,8 @@
 
 #pragma once
 
+
+#include "Components/SphereComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
@@ -25,7 +27,9 @@ class NEWFPSGAMEDEMO_API AWeapon : public AActor
 public:	
 	AWeapon();
 	void ShowPickUpWidget(bool bShowWidget);
-	
+	//用于指定哪些变量需要网络复制以及它们的复制条件
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -57,7 +61,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	
-	FORCEINLINE void SetWeaponState(EWeaponState State) { WeaponState = State; };
+	void SetWeaponState(EWeaponState State);
+	//FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; };
+
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -66,6 +72,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 
 	class USphereComponent* AreaSphere;
+
+	UFUNCTION()
+	void OnRep_WeaponState();
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	EWeaponState WeaponState;
