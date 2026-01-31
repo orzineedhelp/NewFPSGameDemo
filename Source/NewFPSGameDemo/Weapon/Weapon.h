@@ -29,6 +29,9 @@ public:
 	void ShowPickUpWidget(bool bShowWidget);
 	//用于指定哪些变量需要网络复制以及它们的复制条件
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void Fire(const FVector& HitTarget);
+
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -62,8 +65,9 @@ public:
 
 	
 	void SetWeaponState(EWeaponState State);
-	//FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; };
 
+
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -82,5 +86,17 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UWidgetComponent* PickUpWidget;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class UAnimationAsset* FireAnimation;
+
+	// 音频组件
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class UAudioComponent* FireAudio;
+
+	// 粒子系统组件
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	class UParticleSystemComponent* MuzzleFlash;
 	
+
 };

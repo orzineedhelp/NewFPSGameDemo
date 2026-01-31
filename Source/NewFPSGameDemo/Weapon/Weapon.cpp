@@ -5,6 +5,10 @@
 #include "NewFPSGameDemoCharacter.h"
 #include "Components/WidgetComponent.h"
 #include <Net/UnrealNetwork.h>
+#include "Animation/AnimationAsset.h"
+#include "Components/AudioComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -32,6 +36,18 @@ AWeapon::AWeapon()
 
 	PickUpWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickUpWidget"));
 	PickUpWidget->SetupAttachment(RootComponent);
+
+	// 创建并配置音频组件
+	FireAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("FireAudio"));
+	FireAudio->SetupAttachment(RootComponent);
+	FireAudio->bAutoActivate = false;  // 不自动播放
+	FireAudio->SetRelativeLocation(FVector(0, 0, 0));
+
+	// 创建并配置粒子系统组件
+	MuzzleFlash = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("MuzzleFlash"));
+	MuzzleFlash->SetupAttachment(GetWeaponMesh(), FName("Muzzle"));  // 附加到枪口插槽
+	MuzzleFlash->bAutoActivate = false;  // 不自动播放
+	MuzzleFlash->SetRelativeLocation(FVector(0, 0, 0));
 }
 
 void AWeapon::ShowPickUpWidget(bool bShowWidget)
@@ -46,6 +62,21 @@ void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeP
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AWeapon, WeaponState);
+
+}
+
+void AWeapon::Fire(const FVector& HitTarget)
+{
+	if(FireAudio) FireAudio->Play();
+	if (MuzzleFlash)
+	{
+		const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("Muzzle"));
+		FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
+		// 确保组件在正确位置
+		MuzzleFlash->SetWorldTransform(SocketTransform);
+		// 播放粒子效果
+		MuzzleFlash->Activate();
+	}
 
 }
 

@@ -32,7 +32,11 @@ protected:
 	void FireButtonPressed(bool bPressed);
 
 	UFUNCTION(Server, Reliable)
-	void ServerSetFiring(bool bPressed);
+	void ServerSetFiring(bool bPressed,const FVector_NetQuantize& TraceHitTarget );
+
+	//¶à²¥
+	UFUNCTION(NetMulticast,Reliable)
+	void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
 
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
@@ -49,4 +53,6 @@ private:
 
 	bool bAiming;
 	bool bFireButtonPressed;
+
+
 };
