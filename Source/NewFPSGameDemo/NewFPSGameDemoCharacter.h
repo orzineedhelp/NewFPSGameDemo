@@ -163,6 +163,10 @@ protected:
 	virtual void DoFireEnd();
 
 private:
+
+	UPROPERTY(VisibleAnyWhere, Category = Camera)
+	class UCameraComponent* FollowCamera;
+
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	class UWidgetComponent* OverheadWidget;
 
@@ -179,8 +183,7 @@ private:
 	UFUNCTION(Server,Reliable)
 	void ServerEquipButtonPressed();
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	class UAnimMontage* FireWeaponMontage;
+
 
 public:
 
@@ -193,6 +196,12 @@ public:
 
 	bool IsFiring();
 
+	FVector GetHitTarget() const;
+
+	FORCEINLINE UCameraComponent* GetFollowCamera() const {  return FirstPersonCameraComponent; }
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastHit();
 
 };
 

@@ -31,6 +31,8 @@ protected:
 
 	void FireButtonPressed(bool bPressed);
 
+	void Fire_ButtonPressed();
+
 	UFUNCTION(Server, Reliable)
 	void ServerSetFiring(bool bPressed,const FVector_NetQuantize& TraceHitTarget );
 
@@ -54,8 +56,43 @@ private:
 	UPROPERTY(Replicated)
 	class AWeapon* EquippedWeapon;
 
+	UPROPERTY(EditAnywhere)
+	float BaseWalkSpeed;
+
+	UPROPERTY(EditAnywhere)
+	float AimWalkSpeed;
+
 	bool bAiming;
 	bool bFireButtonPressed;
+	bool bHit;
+
+	//HUD准线
+	float CrosshairVelocityFactor;
+	float CrosshairInAirFactor;
+	float CrosshairAimFactor;
+	float CrosshairShootingFactor;
+
+	FVector HitTarget;
+
+	//Aiming FOV
+	float DefaultFOV;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ZoomedFOV = 30.f;
+
+	float CurrentFOV;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ZoomInterpSpeed = 20.f;
+
+	void InterpFOV(float DeltaTime);
+
+	//自动开火计时器
+	FTimerHandle FireTimer;
 
 
+
+	void StartFireTimer();
+	//回调函数控制时间
+	void FireTimerFinished();
+public:
 };

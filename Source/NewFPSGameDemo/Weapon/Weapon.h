@@ -48,6 +48,18 @@ public:
 	UPROPERTY(EditAnywhere, Category = Crosshairs)
 	UTexture2D* CrosshairsBottom;
 
+	//Zoomed FOV
+	UPROPERTY(EditAnywhere)
+	float ZoomedFOV = 30.f;
+	UPROPERTY(EditAnywhere)
+	float ZoomInterpSpeed = 20.f;
+
+
+	//×Ô¶¯¿ª»ð
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float FireDelay = .15;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	bool bAutomatic = true;
 
 protected:
 	virtual void BeginPlay() override;
@@ -84,6 +96,9 @@ public:
 
 
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomedInterpSpeed() const { return ZoomInterpSpeed; }
+
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -115,6 +130,8 @@ private:
 	class UParticleSystemComponent* MuzzleFlash;
 	
 	
+
+	public:
 
 
 

@@ -15,6 +15,7 @@
 #include "NewFPSGameDemo.h"
 #include "FPSComponent/CombatComponent.h"
 
+
 ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 {
 	// Set size for collision capsule
@@ -41,7 +42,7 @@ ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 	// configure the character comps
 	GetMesh()->SetOwnerNoSee(true);
 	GetMesh()->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::WorldSpaceRepresentation;
-
+	GetMesh()->SetCollisionObjectType(ECC_SkeletalMesh);
 	GetCapsuleComponent()->SetCapsuleSize(34.0f, 96.0f);
 
 	// Configure character movement
@@ -305,6 +306,7 @@ void ANewFPSGameDemoCharacter::DoFireEnd()
 	if (Combat)
 	{
 		Combat->FireButtonPressed(false);
+		
 	}
 }
 
@@ -316,6 +318,8 @@ void ANewFPSGameDemoCharacter::ServerEquipButtonPressed_Implementation()
 		Combat->EquipWeapon(OverlappingWeapon);
 	}
 }
+
+
 
 void ANewFPSGameDemoCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 {
@@ -347,10 +351,23 @@ bool ANewFPSGameDemoCharacter::IsFiring()
 	return (Combat && Combat->bFireButtonPressed);
 }
 
+FVector ANewFPSGameDemoCharacter::GetHitTarget() const
+{
+	if (Combat == nullptr) return FVector();
+	return Combat->HitTarget;
+}
+
+void ANewFPSGameDemoCharacter::MulticastHit_Implementation()
+{
+}
+
+
+
 bool ANewFPSGameDemoCharacter::IsAiming()
 {
 	return (Combat && Combat->bAiming);
 }
+
 
 
 void ANewFPSGameDemoCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)
