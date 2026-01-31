@@ -6,6 +6,19 @@
 #include "GameFramework/HUD.h"
 #include "FPSHUD.generated.h"
 
+USTRUCT(BlueprintType)
+struct FHUDPackage
+{
+	GENERATED_BODY()
+public:
+	class UTexture2D* CrosshairsCenter;
+	UTexture2D* CrosshairsLeft;
+	UTexture2D* CrosshairsRight;
+	UTexture2D* CrosshairsTop;
+	UTexture2D* CrosshairsBottom;
+	float CrosshairSpread;
+	FLinearColor CrosshairsColor;
+};
 /**
  * 
  */
@@ -14,4 +27,16 @@ class NEWFPSGAMEDEMO_API AFPSHUD : public AHUD
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void DrawHUD() override;
+
+protected:
+
+private:
+	FHUDPackage HUDPackage;
+
+	void DrawCrosshair(UTexture2D* Texture,FVector2D ViewportCenter);
+
+public:
+	FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
 };

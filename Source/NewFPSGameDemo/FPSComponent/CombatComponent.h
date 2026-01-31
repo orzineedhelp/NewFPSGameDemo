@@ -40,6 +40,7 @@ protected:
 
 	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
 
+	void SetHUDCrosshairs(float DeltaTime);
 
 public:	
 
@@ -47,6 +48,8 @@ public:
 
 private:
 	class ANewFPSGameDemoCharacter* Character;
+	class ANewFPSGameDemoPlayerController* Controller;
+	class AFPSHUD* HUD;
 
 	UPROPERTY(Replicated)
 	class AWeapon* EquippedWeapon;
