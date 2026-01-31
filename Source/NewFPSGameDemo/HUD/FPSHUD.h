@@ -30,7 +30,15 @@ class NEWFPSGAMEDEMO_API AFPSHUD : public AHUD
 public:
 	virtual void DrawHUD() override;
 
+
+	UPROPERTY(EditAnywhere, Category = "Player States")
+	TSubclassOf<class UUserWidget> CharacterOverlayClass;
+
+	void AddCharacterOverlay();
+	class UCharacterOverlay* CharacterOverlay;
+
 protected:
+	virtual void BeginPlay() override;
 
 private:
 	FHUDPackage HUDPackage;

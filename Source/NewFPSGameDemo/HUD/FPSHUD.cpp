@@ -2,6 +2,8 @@
 
 
 #include "FPSHUD.h"
+#include "GameFramework/PlayerController.h"
+#include "CharacterOverlay.h"
 
 void AFPSHUD::DrawHUD()
 {
@@ -41,6 +43,20 @@ void AFPSHUD::DrawHUD()
 			DrawCrosshair(HUDPackage.CrosshairsBottom, ViewportCenter, Spread);
 		}
 	}
+}
+void AFPSHUD::AddCharacterOverlay()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && CharacterOverlayClass)
+	{
+		CharacterOverlay = CreateWidget<UCharacterOverlay>(PlayerController, CharacterOverlayClass);
+		CharacterOverlay->AddToViewport();
+	}
+}
+void AFPSHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	AddCharacterOverlay();
 }
 void AFPSHUD::DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FVector2D Spread)
 {

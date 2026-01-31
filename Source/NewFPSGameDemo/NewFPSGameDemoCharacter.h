@@ -34,6 +34,7 @@ class ANewFPSGameDemoCharacter : public ACharacter
 	UCameraComponent* FirstPersonCameraComponent;
 
 protected:
+	virtual void BeginPlay() override;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
@@ -162,6 +163,13 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoFireEnd();
 
+
+	UFUNCTION()
+	void ReceiveDamage(AActor* DamagedActor,float Damage,const UDamageType* DamageType,class AController* InstigatorController,AActor* DamageCauser);
+
+	void UpdateHUDHealth();
+
+
 private:
 
 	UPROPERTY(VisibleAnyWhere, Category = Camera)
@@ -195,13 +203,29 @@ public:
 	bool IsAiming();
 
 	bool IsFiring();
+	
+	bool IsHit;
 
 	FVector GetHitTarget() const;
 
 	FORCEINLINE UCameraComponent* GetFollowCamera() const {  return FirstPersonCameraComponent; }
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastHit();
+	
 
+
+private:
+	//½ÇÉ«ÑªÌõ
+	UPROPERTY(EditAnywhere, Category = "PlayerState")
+	float MaxHealth = 100.f;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere,Category = "PlayerState")
+	float Health = 100.f;
+
+	UFUNCTION()
+	void OnRep_Health();
+
+	void Elim();
+
+	class ANewFPSGameDemoPlayerController* PlayerController;
 };
 

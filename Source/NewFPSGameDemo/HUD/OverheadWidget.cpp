@@ -3,6 +3,7 @@
 
 #include "Components/TextBlock.h"
 #include "OverheadWidget.h"
+#include "CharacterOverlay.h"
 
 void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 {
@@ -54,6 +55,8 @@ void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
 	FString LocalRoleString = FString::Printf(TEXT("Local Role: %s\nRemote Role:%s"), *LRole, *RRole);
 	SetDisplayText(LocalRoleString);
 }
+
+
 
 void UOverheadWidget::NativeDestruct()
 {

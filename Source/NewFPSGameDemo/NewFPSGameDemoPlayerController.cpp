@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-
+#include "Components/ProgressBar.h"
 #include "NewFPSGameDemoPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
@@ -9,6 +9,9 @@
 #include "Blueprint/UserWidget.h"
 #include "NewFPSGameDemo.h"
 #include "Widgets/Input/SVirtualJoystick.h"
+#include "HUD/FPSHUD.h"
+#include "HUD/CharacterOverlay.h"
+#include "Components/TextBlock.h"
 
 ANewFPSGameDemoPlayerController::ANewFPSGameDemoPlayerController()
 {
@@ -39,6 +42,8 @@ void ANewFPSGameDemoPlayerController::BeginPlay()
 		}
 
 	}
+
+	FPSHUD = Cast<AFPSHUD>(GetHUD());
 }
 
 void ANewFPSGameDemoPlayerController::SetupInputComponent()
@@ -65,6 +70,20 @@ void ANewFPSGameDemoPlayerController::SetupInputComponent()
 				}
 			}
 		}
+	}
+	
+}
+
+void ANewFPSGameDemoPlayerController::SetHUDHealth(float Health, float MaxHealth)
+{
+	FPSHUD = FPSHUD == nullptr ? Cast<AFPSHUD>(GetHUD()) :FPSHUD;
+	bool bHUDValid = FPSHUD && FPSHUD->CharacterOverlay && FPSHUD->CharacterOverlay->HealthBar && FPSHUD->CharacterOverlay->HealthText;
+	if (bHUDValid)
+	{
+		const float HealthPercent = Health / MaxHealth;
+		FPSHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
+		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
+		FPSHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
 	}
 	
 }

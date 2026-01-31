@@ -14,7 +14,19 @@
 #include "Net/UnrealNetwork.h"
 #include "NewFPSGameDemo.h"
 #include "FPSComponent/CombatComponent.h"
+#include "NewFPSGameDemoPlayerController.h"
+#include "GameMode/FPSGameMode.h"
 
+
+void ANewFPSGameDemoCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	UpdateHUDHealth();
+	if (HasAuthority())
+	{
+		OnTakeAnyDamage.AddDynamic(this, &ANewFPSGameDemoCharacter::ReceiveDamage);
+	}
+}
 
 ANewFPSGameDemoCharacter::ANewFPSGameDemoCharacter()
 {
@@ -112,6 +124,7 @@ void ANewFPSGameDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	// 注册 OverlappingWeapon 进行网络复制
 	//COND_OwnerOnly：复制条件，表示这个变量只复制给该 Actor 的所有者
 	DOREPLIFETIME_CONDITION(ANewFPSGameDemoCharacter, OverlappingWeapon,COND_OwnerOnly);
+	DOREPLIFETIME(ANewFPSGameDemoCharacter, Health);
 }
 
 //组件初始化完成后调用
@@ -311,6 +324,60 @@ void ANewFPSGameDemoCharacter::DoFireEnd()
 }
 
 
+
+
+void ANewFPSGameDemoCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
+{
+	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+
+	GEngine->AddOnScreenDebugMessage
+	(
+		-1, 			
+		10, 			
+		FColor::Blue, 	
+		"Hit!!!!!"	
+	);
+
+	IsHit = true;
+	UpdateHUDHealth();
+
+	if (Health == 0.f) 
+	{
+		AFPSGameMode* FPSGamemode = GetWorld()->GetAuthGameMode<AFPSGameMode>();
+
+		if (FPSGamemode)
+		{
+			PlayerController = PlayerController == nullptr ? Cast<ANewFPSGameDemoPlayerController>(Controller) : PlayerController;
+			ANewFPSGameDemoPlayerController* AttackController = Cast<ANewFPSGameDemoPlayerController>(InstigatorController);
+			FPSGamemode->PlayerEliminated(this, PlayerController, AttackController);
+		}
+	}
+	
+}
+
+void ANewFPSGameDemoCharacter::UpdateHUDHealth()
+{
+	PlayerController = PlayerController == nullptr ? Cast<ANewFPSGameDemoPlayerController>(Controller) : PlayerController;
+	if (PlayerController)
+	{
+		PlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+}
+
+void ANewFPSGameDemoCharacter::OnRep_Health()
+{
+	IsHit = true;
+	UpdateHUDHealth();
+
+}
+
+void ANewFPSGameDemoCharacter::Elim()
+{
+
+}
+
+
+
 void ANewFPSGameDemoCharacter::ServerEquipButtonPressed_Implementation()
 {
 	if (Combat)
@@ -357,9 +424,8 @@ FVector ANewFPSGameDemoCharacter::GetHitTarget() const
 	return Combat->HitTarget;
 }
 
-void ANewFPSGameDemoCharacter::MulticastHit_Implementation()
-{
-}
+
+
 
 
 

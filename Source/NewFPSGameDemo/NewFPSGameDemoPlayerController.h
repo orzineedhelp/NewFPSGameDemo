@@ -26,6 +26,7 @@ public:
 
 protected:
 
+
 	/** Input Mapping Contexts */
 	UPROPERTY(EditAnywhere, Category="Input|Input Mappings")
 	TArray<UInputMappingContext*> DefaultMappingContexts;
@@ -47,4 +48,10 @@ protected:
 	/** Input mapping context setup */
 	virtual void SetupInputComponent() override;
 
+
+public:
+	void SetHUDHealth(float Health, float MaxHealth);
+
+private:
+	class AFPSHUD* FPSHUD;
 };

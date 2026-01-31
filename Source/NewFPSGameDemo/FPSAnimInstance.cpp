@@ -22,5 +22,5 @@ void UFPSAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	bWeaponEquipped = FPSCharacter->IsWeaponEquipped();
 	bAiming = FPSCharacter->IsAiming();
 	bFiring = FPSCharacter->IsFiring();
-	//bHit=FPSCharacter->
+	bHit = FPSCharacter->IsHit;
 }
